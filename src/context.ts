@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ScrollContextType } from './types';
 
 const DEFAULT_CONTEXT = {
   selected: '',

@@ -1,3 +1,5 @@
+import type { RefObject } from 'react';
+
 type RefsRegister = {
   [x: string]: RefObject<HTMLElement>;
 };

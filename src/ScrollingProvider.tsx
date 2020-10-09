@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { debounce } from './utils';
 import { Provider } from './context';
 import smoothscroll from 'smoothscroll-polyfill';
+import type { RefsRegister } from './types';
 
 type Props = {
   debounceDelay?: number;
@@ -34,7 +35,10 @@ const ScrollingProvider = ({
   const handleScroll = () => {
     const selectedSection = Object.keys(REFS).reduce(
       (acc, id) => {
-        const { top } = REFS[id].current.getBoundingClientRect();
+        if (!REFS[id]) return acc;
+        const current = REFS[id].current;
+        if (!current) return acc;
+        const { top } = current.getBoundingClientRect();
         const differenceFromTop = Math.abs(top);
 
         if (differenceFromTop >= acc.differenceFromTop) return acc;
@@ -64,7 +68,8 @@ const ScrollingProvider = ({
   const scrollTo = (section: string) => {
     const sectionRef = REFS[section];
 
-    if (!sectionRef) return console.warn('Section ID not recognized!'); // eslint-disable-line
+    if (!sectionRef) return console.warn('Section ID not recognized!');
+    if (!sectionRef.current) return console.warn('SectionRef does not contain a current');
 
     const top = sectionRef.current.offsetTop + offset;
     setSelected(section);
